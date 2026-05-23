@@ -75,6 +75,12 @@ python -m spud_imprint batch `
 
 本仓库的具体约定见 [docs/development.md](docs/development.md)。
 
+更多文档：
+
+- [使用指南](docs/usage.md)
+- [配置说明](docs/configuration.md)
+- [架构说明](docs/architecture.md)
+
 核心约定：
 
 - 默认 README 使用中文，同时维护英文版 `README.en.md`。

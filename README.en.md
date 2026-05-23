@@ -75,6 +75,12 @@ python -m spud_imprint batch `
 
 See [docs/development.md](docs/development.md) for repository conventions.
 
+More documentation:
+
+- [Usage guide](docs/usage.md)
+- [Configuration reference](docs/configuration.md)
+- [Architecture notes](docs/architecture.md)
+
 Key rules:
 
 - The default README is Chinese, with `README.en.md` maintained alongside it.

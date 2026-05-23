@@ -1,33 +1,78 @@
-# Architecture
+# 架构说明
 
-## Direction
+本文档记录 Spud Imprint 当前的架构方向和主要技术决策。它不是用户操作手册，而是帮助后续开发判断“为什么这样做”的背景文档。
 
-Spud Imprint should evolve as a layered tool:
+## 总体方向
 
-1. A Python core library for image loading, layout, EXIF metadata extraction, text
-   rendering, and export.
-2. A Python CLI for batch processing and automation.
-3. A future Tauri desktop app with a React/TypeScript front end for a modern,
-   cross-platform GUI.
+Spud Imprint 会按分层方式演进：
 
-The GUI should call the same core processing model used by the CLI. The preview
-editor and final export should share one configuration schema so the rendered
-output matches what the user saw in the preview.
+1. Python 核心库：负责图片读取、画布布局、EXIF 元数据提取、文字渲染和导出。
+2. Python CLI：负责批处理、自动化和未来 GUI 可复用的命令入口。
+3. 桌面 GUI：未来使用 Tauri + React/TypeScript 实现现代跨平台界面。
 
-## Technology Decisions
+核心原则是：图像处理逻辑不绑定 CLI 或 GUI。CLI 和未来 GUI 都应该调用同一套核心处理模型。
 
-- Keep Python for the first core implementation because the existing code is
-  Python and Pillow already handles the required image operations.
-- Use a CLI before a GUI so batch behavior is testable and scriptable.
-- Use Tauri + React/TypeScript for the future GUI when interactive previews are
-  needed.
-- Use Konva.js or a similar canvas library for direct manipulation in the preview
-  editor.
-- Consider a Rust rendering core later only if distribution size or runtime
-  dependency concerns become important enough to justify the rewrite.
+## 预览和导出
 
-## Packaging Direction
+未来 GUI 会有可交互预览页面，例如拖动文字、调整位置、修改边距、切换画布比例等。
 
-The first packaged GUI can ship a Python CLI as a Tauri sidecar. End users should
-not need to install Python manually. If package size becomes a hard constraint,
-the rendering core can be migrated behind the same configuration schema.
+预览层和最终导出层必须共享同一份配置模型。用户在预览中看到的布局，应当能被同一份配置驱动的 Python 导出流程复现，避免出现“预览是一套逻辑，导出是另一套逻辑”的问题。
+
+## 技术决策
+
+### 继续使用 Python 作为第一阶段核心
+
+当前已有代码是 Python，Pillow 已经能覆盖主要图像处理需求，包括读取图片、绘制文字、处理圆角、阴影、模糊背景和导出文件。
+
+第一阶段继续使用 Python，可以降低重构成本，先把功能边界、配置模型和测试体系稳定下来。
+
+### 先做 CLI，再做 GUI
+
+CLI 是更稳定的底层入口：
+
+- 方便批量处理真实照片。
+- 方便写自动化测试。
+- 方便未来 GUI 通过 sidecar 或内部命令复用。
+- 方便在没有图形界面的环境中运行。
+
+GUI 应该建立在稳定 CLI 和核心库之上，而不是直接把图像处理逻辑写进界面层。
+
+### 未来 GUI 使用 Tauri + React/TypeScript
+
+目标 GUI 是现代、跨平台、可分发的桌面应用。Tauri + React/TypeScript 适合承担界面层：
+
+- Tauri 负责桌面壳和跨平台打包。
+- React/TypeScript 负责复杂交互界面。
+- Canvas 相关库负责可操作预览。
+
+### 预览编辑优先考虑 Konva.js
+
+如果预览页面需要用户直接拖动文字、缩放元素、选择对象和调整位置，Konva.js 或类似 Canvas 库比手写原生 Canvas 更适合。
+
+它可以帮助处理：
+
+- 拖拽。
+- 选中状态。
+- 控制点。
+- 图层。
+- 画布缩放。
+
+## 打包方向
+
+第一版 GUI 可以把 Python CLI 作为 Tauri sidecar 一起打包。最终用户不应该手动安装 Python、Pillow、Node.js 或 Rust。
+
+这种方式的优点是开发成本低，能复用已经稳定的 Python 核心。
+
+潜在问题是安装包体积会比纯原生实现更大。如果未来包体积、启动速度或分发体验成为明确问题，可以在不改变配置模型的前提下，把渲染核心逐步迁移到 Rust。
+
+## 暂不做的事
+
+当前阶段不优先做：
+
+- 直接重写为 Rust。
+- 在核心逻辑稳定前启动完整 GUI。
+- 为了真实照片测试把大图提交到 Git。
+- 为了版本演进创建 `v0.5.py` 这类脚本文件。
+
+这些决定的目的，是先建立清晰、可测试、可托管的项目基础，再扩展 GUI 和分发能力。
+

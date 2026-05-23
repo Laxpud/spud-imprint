@@ -2,7 +2,7 @@
 
 ## Direction
 
-Laxpud Imprint should evolve as a layered tool:
+Spud Imprint should evolve as a layered tool:
 
 1. A Python core library for image loading, layout, EXIF metadata extraction, text
    rendering, and export.
@@ -31,4 +31,3 @@ output matches what the user saw in the preview.
 The first packaged GUI can ship a Python CLI as a Tauri sidecar. End users should
 not need to install Python manually. If package size becomes a hard constraint,
 the rendering core can be migrated behind the same configuration schema.
-

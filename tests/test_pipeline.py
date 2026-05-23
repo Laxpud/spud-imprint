@@ -4,8 +4,8 @@ from pathlib import Path
 
 from PIL import Image
 
-from laxpud_imprint.config import ImprintConfig
-from laxpud_imprint.pipeline import process_batch
+from spud_imprint.config import ImprintConfig
+from spud_imprint.pipeline import process_batch
 
 
 class PipelineTests(unittest.TestCase):

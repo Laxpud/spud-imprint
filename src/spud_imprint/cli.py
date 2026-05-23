@@ -9,7 +9,7 @@ from .pipeline import process_batch
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="laxpud-imprint",
+        prog="spud-imprint",
         description="Batch photo imprint and watermark tool.",
     )
     subparsers = parser.add_subparsers(dest="command")

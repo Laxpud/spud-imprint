@@ -2,8 +2,8 @@ import unittest
 
 from PIL import ImageFont
 
-from laxpud_imprint.canvas import VirtualCanvas
-from laxpud_imprint.text import TextStylePreset, calculate_text_positions
+from spud_imprint.canvas import VirtualCanvas
+from spud_imprint.text import TextStylePreset, calculate_text_positions
 
 
 class TextPlacementTests(unittest.TestCase):

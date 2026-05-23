@@ -1,6 +1,6 @@
-# Laxpud Imprint
+# Spud Imprint
 
-Laxpud Imprint 是一个批量照片题字和水印工具。
+Spud Imprint 是一个批量照片题字和水印工具。
 
 [English README](README.en.md)
 
@@ -32,7 +32,7 @@ python -m venv .venv
 ## 运行批处理
 
 ```powershell
-python -m laxpud_imprint batch `
+python -m spud_imprint batch `
   --input .\input `
   --output .\output `
   --config .\examples\config.example.toml
@@ -65,7 +65,7 @@ python -m unittest discover -s tests
 如果要用自己的真实照片做本地手动测试，可以运行：
 
 ```powershell
-python -m laxpud_imprint batch `
+python -m spud_imprint batch `
   --input .\local\real-tests\input `
   --output .\local\real-tests\output `
   --config .\examples\config.example.toml
@@ -85,7 +85,7 @@ python -m laxpud_imprint batch `
 ## 路线图
 
 1. 保留旧脚本到 `legacy/` 作为参考。
-2. 稳定 `src/laxpud_imprint` 中的核心处理模块。
+2. 稳定 `src/spud_imprint` 中的核心处理模块。
 3. 完善配置驱动的 CLI。
 4. 扩展测试覆盖元数据、布局、导出和端到端批处理。
 5. 核心逻辑稳定后，再开始桌面 GUI。

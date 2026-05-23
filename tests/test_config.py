@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from laxpud_imprint.config import load_config
+from spud_imprint.config import load_config
 
 
 class ConfigTests(unittest.TestCase):

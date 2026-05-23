@@ -1,6 +1,6 @@
-# Laxpud Imprint
+# Spud Imprint
 
-Laxpud Imprint is a batch photo imprint and watermark tool.
+Spud Imprint is a batch photo imprint and watermark tool.
 
 [中文 README](README.md)
 
@@ -32,7 +32,7 @@ python -m venv .venv
 ## Run Batch Processing
 
 ```powershell
-python -m laxpud_imprint batch `
+python -m spud_imprint batch `
   --input .\input `
   --output .\output `
   --config .\examples\config.example.toml
@@ -65,7 +65,7 @@ The current tests use generated small images and temporary directories. Real pho
 For local manual testing with real photos, run:
 
 ```powershell
-python -m laxpud_imprint batch `
+python -m spud_imprint batch `
   --input .\local\real-tests\input `
   --output .\local\real-tests\output `
   --config .\examples\config.example.toml
@@ -85,7 +85,7 @@ Key rules:
 ## Roadmap
 
 1. Preserve the original scripts under `legacy/`.
-2. Stabilize the core modules under `src/laxpud_imprint`.
+2. Stabilize the core modules under `src/spud_imprint`.
 3. Improve the configuration-driven CLI.
 4. Expand tests around metadata, layout, export, and end-to-end batch processing.
 5. Start the desktop GUI after the core logic is stable.

@@ -1,7 +1,7 @@
 import unittest
 
-from laxpud_imprint.metadata import format_special_field, prepare_metadata_text
-from laxpud_imprint.text import TextStylePreset
+from spud_imprint.metadata import format_special_field, prepare_metadata_text
+from spud_imprint.text import TextStylePreset
 
 
 class MetadataTests(unittest.TestCase):

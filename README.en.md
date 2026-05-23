@@ -57,7 +57,7 @@ See [docs/development.md](docs/development.md) for repository conventions.
 Key rules:
 
 - The default README is Chinese, with `README.en.md` maintained alongside it.
-- Python comments and docstrings use Chinese for accessibility.
+- AI assistants should write new or edited Python comments and docstrings in Chinese; this is not a strict requirement for human contributors.
 - Identifiers, CLI commands, logs, terminal output, and config keys remain English.
 - Test assets should be small, sanitized, and reproducible fixtures; real working photos should not be committed directly.
 

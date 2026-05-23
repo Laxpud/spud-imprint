@@ -57,7 +57,7 @@ python -m unittest discover -s tests
 核心约定：
 
 - 默认 README 使用中文，同时维护英文版 `README.en.md`。
-- Python 注释和 docstring 使用中文，帮助代码能力不强的人理解逻辑。
+- AI 助手新增或修改 Python 注释和 docstring 时使用中文；这不是对人类贡献者的强制要求。
 - 代码标识符、CLI 命令、日志、终端输出、配置键名继续使用英文。
 - 测试素材只提交小型、脱敏、可复现的 fixture；真实照片素材不直接进入 Git。
 

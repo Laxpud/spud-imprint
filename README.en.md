@@ -77,6 +77,7 @@ See [docs/development.md](docs/development.md) for repository conventions.
 
 More documentation:
 
+- [Project TODO](TODO.md)
 - [Usage guide](docs/usage.md)
 - [Configuration reference](docs/configuration.md)
 - [Architecture notes](docs/architecture.md)

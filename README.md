@@ -40,7 +40,19 @@ python -m laxpud_imprint batch `
 
 命令会扫描输入目录中的常见图片格式，根据配置渲染水印和题字，并把导出结果写入输出目录。
 
-本地原始照片和生成结果不会进入 Git。请把自己的工作照片放在 `input/` 这类被忽略的目录中。
+本地原始照片和生成结果不会进入 Git。建议把真实照片测试素材放在：
+
+```text
+local/real-tests/input/
+```
+
+对应导出结果放在：
+
+```text
+local/real-tests/output/
+```
+
+`local/` 是本地专用目录，已被 Git 忽略。
 
 ## 运行测试
 
@@ -49,6 +61,15 @@ python -m unittest discover -s tests
 ```
 
 当前测试使用程序生成的小图片和临时目录，不依赖真实照片素材。真实照片通常体积大、可能包含隐私或版权信息，不应该默认进入仓库。
+
+如果要用自己的真实照片做本地手动测试，可以运行：
+
+```powershell
+python -m laxpud_imprint batch `
+  --input .\local\real-tests\input `
+  --output .\local\real-tests\output `
+  --config .\examples\config.example.toml
+```
 
 ## 开发规范
 

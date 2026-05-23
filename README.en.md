@@ -40,7 +40,19 @@ python -m laxpud_imprint batch `
 
 The command scans the input directory for common image formats, renders the configured imprint, and writes exported images into the output directory.
 
-Local source photos and generated outputs are intentionally ignored by Git. Keep your own working photos in an ignored folder such as `input/`.
+Local source photos and generated outputs are intentionally ignored by Git. Put local real-photo test inputs here:
+
+```text
+local/real-tests/input/
+```
+
+Put corresponding outputs here:
+
+```text
+local/real-tests/output/
+```
+
+The `local/` directory is local-only and ignored by Git.
 
 ## Run Tests
 
@@ -49,6 +61,15 @@ python -m unittest discover -s tests
 ```
 
 The current tests use generated small images and temporary directories. Real photos are usually large and may contain private or copyrighted metadata, so they are not committed by default.
+
+For local manual testing with real photos, run:
+
+```powershell
+python -m laxpud_imprint batch `
+  --input .\local\real-tests\input `
+  --output .\local\real-tests\output `
+  --config .\examples\config.example.toml
+```
 
 ## Development Rules
 

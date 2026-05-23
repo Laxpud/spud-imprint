@@ -6,6 +6,9 @@ __pycache__/
 venv/
 .env
 
+# Local-only real photo test workspace. Keep this out of Git.
+/local/
+
 # Original local working files kept outside the modern project tree.
 /BatchTool_PhotoPocess_v0.1.py
 /BatchTool_PhotoPocess_v0.2.py

@@ -33,6 +33,8 @@ python -m unittest discover -s tests
 
 - Prefer generated images and temporary directories for fast tests.
 - Real photo assets should not be committed by default.
+- Local real-photo manual test inputs belong under `local/real-tests/input/`.
+- Local real-photo manual test outputs belong under `local/real-tests/output/`.
 - If fixture images are needed, place small, sanitized, redistributable files under `tests/fixtures/`.
 
 ## Git And Assets
@@ -40,6 +42,7 @@ python -m unittest discover -s tests
 - Do not create versioned script files such as `v0.5.py`; use Git commits and tags.
 - Keep original legacy scripts under `legacy/`.
 - Do not commit generated outputs, working photos, caches, or virtual environments.
+- Keep `local/` ignored; it is reserved for local-only real-photo tests.
 - Keep the root directory focused on project metadata and source folders.
 
 ## Dependency Management
@@ -52,4 +55,3 @@ uv pip install -e .
 ```
 
 - `uv` is a development tool preference, not an end-user runtime dependency.
-

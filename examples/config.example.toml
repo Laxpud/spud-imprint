@@ -1,0 +1,35 @@
+[batch]
+input_dir = "input"
+output_dir = "output"
+filename_suffix = "_uniform_watermark"
+format = "JPEG"
+quality = 100
+
+[canvas]
+layout_mode = "fit"
+aspect_ratio = 1.7777777778
+background_color = [240, 240, 240]
+margin_relative = 0.05
+blurred_background = true
+blur_radius = 100
+blur_extra_scale = 1.5
+blur_fit_mode = "cover"
+
+[photo]
+corner_radius_relative = 0.02
+shadow_enabled = true
+shadow_offset_relative = [0.005, 0.005]
+shadow_blur_relative = 0.01
+shadow_color = [0, 0, 0, 64]
+
+[text]
+fields = ["DateTimeOriginal"]
+font_size_relative = 0.05
+font_name = "assets/fonts/NotoSerifSC-VF.ttf"
+color = [255, 255, 255]
+shadow_color = [220, 220, 220, 128]
+alignment = "left"
+line_spacing = 1.5
+show_field_names = false
+position_preset = "center bottom"
+margin_percent = 0.05

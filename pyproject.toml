@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "laxpud-imprint"
+version = "0.1.0"
+description = "Batch photo imprint and watermark tool"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "Pillow>=10.0.0",
+  "tomli>=2.0.0; python_version<'3.11'",
+]
+
+[project.scripts]
+laxpud-imprint = "laxpud_imprint.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

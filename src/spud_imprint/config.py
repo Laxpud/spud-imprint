@@ -24,6 +24,7 @@ class BatchConfig:
 
 @dataclass
 class CanvasConfig:
+    frame_mode: str | None = None
     layout_mode: str = "fit"
     aspect_ratio: float | None = 16 / 9
     background_color: tuple[int, int, int] = (240, 240, 240)
@@ -37,6 +38,10 @@ class CanvasConfig:
 
 @dataclass
 class PhotoConfig:
+    margin_unit: str | None = None
+    margin_policy: str = "minimum_edge"
+    margin_mm: float | None = None
+    margin_relative: float | None = None
     corner_radius_mm: float | None = None
     corner_radius_relative: float | None = 0.02
     shadow_enabled: bool = True
@@ -78,11 +83,42 @@ def _tuple(value: Any):
     return value
 
 
+def _parse_aspect_ratio(value: Any):
+    if value is None:
+        return None
+    if isinstance(value, int | float):
+        ratio = float(value)
+    elif isinstance(value, str):
+        text = value.strip()
+        if text.lower() in {"", "none", "auto"}:
+            return None
+        separator = ":" if ":" in text else "/"
+        if separator in text:
+            left, right = text.split(separator, 1)
+            try:
+                ratio = float(left.strip()) / float(right.strip())
+            except ValueError as exc:
+                raise ValueError(f"Invalid aspect_ratio: {value}") from exc
+        else:
+            try:
+                ratio = float(text)
+            except ValueError as exc:
+                raise ValueError(f"Invalid aspect_ratio: {value}") from exc
+    else:
+        raise TypeError(f"aspect_ratio must be a number or ratio string: {value!r}")
+
+    if ratio <= 0:
+        raise ValueError(f"aspect_ratio must be greater than 0: {value}")
+    return ratio
+
+
 def _merge_dataclass(instance, values: dict[str, Any]):
     for key, value in values.items():
         if not hasattr(instance, key):
             continue
-        if key.endswith("color"):
+        if key == "aspect_ratio":
+            value = _parse_aspect_ratio(value)
+        elif key.endswith("color"):
             value = _tuple(value)
         elif isinstance(value, list) and key not in {"fields"}:
             value = tuple(value)

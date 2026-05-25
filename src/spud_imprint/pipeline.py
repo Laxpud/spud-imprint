@@ -49,11 +49,16 @@ def render_image(image_path: Path, config: ImprintConfig, project_root: Path | N
         img.load()
         canvas = VirtualCanvas(
             original_image=img,
+            frame_mode=config.canvas.frame_mode,
             layout_mode=config.canvas.layout_mode,
             bg_color=config.canvas.background_color,
             canvas_aspect_ratio=config.canvas.aspect_ratio,
             margin_mm=config.canvas.margin_mm,
             margin_relative=config.canvas.margin_relative,
+            photo_margin_mm=config.photo.margin_mm,
+            photo_margin_relative=config.photo.margin_relative,
+            photo_margin_unit=config.photo.margin_unit,
+            margin_policy=config.photo.margin_policy,
             corner_radius_mm=config.photo.corner_radius_mm,
             corner_radius_relative=config.photo.corner_radius_relative,
             shadow_enabled=config.photo.shadow_enabled,

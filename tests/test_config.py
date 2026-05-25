@@ -39,6 +39,21 @@ show_field_names = true
         self.assertEqual(config.text.color, (255, 255, 255))
         self.assertTrue(config.text.show_field_names)
 
+    def test_parses_ratio_string_as_aspect_ratio(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config_path = Path(tmp) / "config.toml"
+            config_path.write_text(
+                """
+[canvas]
+aspect_ratio = "21:9"
+""".strip(),
+                encoding="utf-8",
+            )
+
+            config = load_config(config_path)
+
+        self.assertAlmostEqual(config.canvas.aspect_ratio, 21 / 9)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -19,9 +19,10 @@ This file defines repository-specific instructions for AI coding agents.
 ## Python Style
 
 - Follow PEP 8 for formatting and PEP 257 for docstrings.
-- Add comments only where they explain intent, data flow, image geometry, coordinate calculations, format conversion, configuration semantics, or non-obvious edge cases.
-- Do not add noisy comments that repeat simple assignments or obvious calls.
-- Public classes, public functions, and complex private methods should have concise docstrings.
+- Add Chinese comments and docstrings generously enough that a reader with little coding experience can quickly understand what each meaningful block of code is doing and why it exists.
+- Prefer short block-level comments before important steps, branches, loops, data transformations, image geometry calculations, coordinate calculations, format conversions, configuration handling, and edge-case handling.
+- Avoid noisy line-by-line comments that only repeat obvious assignments or function calls; comments should explain purpose, data flow, assumptions, or the reason behind a choice.
+- Public classes, public functions, and complex private methods should have concise Chinese docstrings that explain their role, key inputs, outputs, and any important side effects.
 
 ## Testing Rules
 

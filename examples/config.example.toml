@@ -6,8 +6,8 @@ format = "JPEG"
 quality = 100
 
 [canvas]
-layout_mode = "fit"
-aspect_ratio = 1.7777777778
+frame_mode = "fixed_aspect"
+aspect_ratio = "16:9"
 background_color = [240, 240, 240]
 margin_relative = 0.05
 blurred_background = true
@@ -16,6 +16,8 @@ blur_extra_scale = 1.5
 blur_fit_mode = "cover"
 
 [photo]
+margin_unit = "relative"
+margin_policy = "minimum_edge"
 corner_radius_relative = 0.02
 shadow_enabled = true
 shadow_offset_relative = [0.005, 0.005]

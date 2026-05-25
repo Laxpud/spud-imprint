@@ -68,8 +68,8 @@ WEBP
 
 ```toml
 [canvas]
-layout_mode = "fit"
-aspect_ratio = 1.7777777778
+frame_mode = "fixed_aspect"
+aspect_ratio = "16:9"
 background_color = [240, 240, 240]
 margin_relative = 0.05
 blurred_background = true
@@ -78,9 +78,21 @@ blur_extra_scale = 1.5
 blur_fit_mode = "cover"
 ```
 
+### frame_mode
+
+画框比例模式。当前支持：
+
+```text
+photo_aspect
+fixed_aspect
+```
+
+- `photo_aspect`：画框比例跟随导入照片比例。
+- `fixed_aspect`：画框使用固定比例，由 `aspect_ratio` 指定。
+
 ### layout_mode
 
-画布布局模式。当前支持：
+旧版画布布局模式。未设置 `frame_mode` 时仍然可用。当前支持：
 
 ```text
 original
@@ -94,18 +106,19 @@ stretch
 - `fill`：用目标比例生成画布，照片保持原始尺寸居中。
 - `stretch`：根据目标比例扩展画布，但不拉伸照片本身。
 
-当前示例使用 `fit`。
+新配置建议优先使用 `frame_mode`。
 
 ### aspect_ratio
 
-画布宽高比。`1.7777777778` 约等于 `16:9`。
+画布宽高比。固定画框模式下使用。推荐写成 `"16:9"`、`"21:9"` 这样的字符串；旧版数字写法仍然可用。
 
 常见值：
 
 ```text
-1.7777777778  # 16:9
-1.3333333333  # 4:3
-1.0           # 1:1
+"16:9"
+"21:9"
+"4:3"
+"1:1"
 ```
 
 ### background_color
@@ -154,12 +167,51 @@ contain
 
 ```toml
 [photo]
+margin_unit = "relative"
+margin_policy = "minimum_edge"
 corner_radius_relative = 0.02
 shadow_enabled = true
 shadow_offset_relative = [0.005, 0.005]
 shadow_blur_relative = 0.01
 shadow_color = [0, 0, 0, 64]
 ```
+
+### margin_unit
+
+照片到画框边缘的边距单位。当前支持：
+
+```text
+relative
+mm
+```
+
+- `relative`：使用相对比例。
+- `mm`：使用毫米尺寸。
+
+### margin_relative
+
+照片边距的相对比例。与 `frame_mode` 结合时，含义如下：
+
+- `photo_aspect`：四边按照片宽高分别留出相同比例，画框比例保持等于照片比例。
+- `fixed_aspect`：照片完整居中放入固定比例画框，最近边距等于最终画框短边的这个比例。
+
+如果 `[photo]` 未设置 `margin_relative`，会继续使用 `[canvas]` 中的 `margin_relative` 作为兼容默认值。
+
+### margin_mm
+
+照片边距的毫米尺寸。与 `fixed_aspect` 结合时，照片完整居中放入固定比例画框，最近边距等于这个毫米尺寸。
+
+### margin_policy
+
+实际尺寸边距在 `photo_aspect` 下的处理方式。当前支持：
+
+```text
+minimum_edge
+equal_edges
+```
+
+- `minimum_edge`：保持画框比例等于照片比例，较短方向达到指定毫米边距，另一方向按比例增加。
+- `equal_edges`：四边严格使用相同毫米边距，但画框比例可能不再等于照片比例。
 
 ### corner_radius_relative
 
@@ -350,4 +402,3 @@ python -m spud_imprint batch `
 ```
 
 `local/` 已被 Git 忽略，适合保存个人配置和真实照片测试文件。
-

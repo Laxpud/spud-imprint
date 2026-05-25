@@ -7,11 +7,16 @@ class VirtualCanvas:
     def __init__(
         self,
         original_image,
+        frame_mode=None,
         layout_mode="fit",
         bg_color=(255, 255, 255),
         canvas_aspect_ratio=None,
         margin_mm=None,
         margin_relative=None,
+        photo_margin_mm=None,
+        photo_margin_relative=None,
+        photo_margin_unit=None,
+        margin_policy="minimum_edge",
         corner_radius_mm=None,
         corner_radius_relative=None,
         shadow_enabled=False,
@@ -23,11 +28,16 @@ class VirtualCanvas:
     ):
         self.original_image = original_image
         self.img_width, self.img_height = original_image.size
+        self.frame_mode = frame_mode
         self.layout_mode = layout_mode
         self.bg_color = tuple(bg_color)
         self.canvas_aspect_ratio = canvas_aspect_ratio
         self.margin_mm = margin_mm
         self.margin_relative = margin_relative
+        self.photo_margin_mm = photo_margin_mm
+        self.photo_margin_relative = photo_margin_relative
+        self.photo_margin_unit = photo_margin_unit
+        self.margin_policy = margin_policy
         self.corner_radius_mm = corner_radius_mm
         self.corner_radius_relative = corner_radius_relative
         self.shadow_enabled = shadow_enabled
@@ -42,9 +52,138 @@ class VirtualCanvas:
         except (KeyError, TypeError, IndexError):
             self.original_dpi = 300
 
-        self._calculate_canvas_size()
-        self._apply_margin()
+        if self.frame_mode:
+            self._calculate_frame_layout()
+        else:
+            self._calculate_canvas_size()
+            self._apply_margin()
         self._calculate_relative_values()
+
+    def _calculate_frame_layout(self):
+        frame_mode = self.frame_mode.lower()
+        if frame_mode == "photo_aspect":
+            self._calculate_photo_aspect_frame()
+        elif frame_mode == "fixed_aspect":
+            self._calculate_fixed_aspect_frame()
+        else:
+            raise ValueError(f"Unsupported frame mode: {self.frame_mode}")
+
+        self.image_x_offset = (self.width_px - self.img_width) // 2
+        self.image_y_offset = (self.height_px - self.img_height) // 2
+
+    def _resolve_margin_unit(self):
+        if self.photo_margin_unit is not None:
+            return self.photo_margin_unit.lower()
+        if self.photo_margin_mm is not None or self.margin_mm is not None:
+            return "mm"
+        return "relative"
+
+    def _resolve_margin_mm(self):
+        if self.photo_margin_mm is not None:
+            return self.photo_margin_mm
+        return self.margin_mm
+
+    def _resolve_margin_relative(self):
+        if self.photo_margin_relative is not None:
+            return self.photo_margin_relative
+        if self.margin_relative is not None:
+            return self.margin_relative
+        return 0
+
+    def _calculate_relative_photo_aspect_frame(self, margin_relative):
+        if margin_relative < 0 or margin_relative >= 0.5:
+            raise ValueError("margin_relative must be >= 0 and < 0.5")
+
+        scale = 1 / (1 - 2 * margin_relative)
+        self.width_px = int(round(self.img_width * scale))
+        self.height_px = int(round(self.img_height * scale))
+
+    def _calculate_mm_photo_aspect_frame(self, margin_mm):
+        if margin_mm < 0:
+            raise ValueError("margin_mm must be >= 0")
+
+        margin_px = self.mm_to_px(margin_mm)
+        policy = (self.margin_policy or "preserve_frame_ratio").lower()
+        if policy == "equal_edges":
+            self.width_px = self.img_width + 2 * margin_px
+            self.height_px = self.img_height + 2 * margin_px
+            return
+
+        if self.img_width >= self.img_height:
+            scale = (self.img_height + 2 * margin_px) / self.img_height
+        else:
+            scale = (self.img_width + 2 * margin_px) / self.img_width
+
+        self.width_px = int(round(self.img_width * scale))
+        self.height_px = int(round(self.img_height * scale))
+
+    def _calculate_photo_aspect_frame(self):
+        unit = self._resolve_margin_unit()
+        if unit == "relative":
+            self._calculate_relative_photo_aspect_frame(
+                self._resolve_margin_relative()
+            )
+        elif unit == "mm":
+            margin_mm = self._resolve_margin_mm()
+            if margin_mm is None:
+                raise ValueError("margin_mm is required when margin_unit is mm")
+            self._calculate_mm_photo_aspect_frame(margin_mm)
+        else:
+            raise ValueError(f"Unsupported margin unit: {self.photo_margin_unit}")
+
+    def _calculate_relative_fixed_aspect_frame(self, margin_relative):
+        if self.canvas_aspect_ratio is None:
+            raise ValueError("aspect_ratio is required when frame_mode is fixed_aspect")
+        if margin_relative < 0 or margin_relative >= 0.5:
+            raise ValueError("margin_relative must be >= 0 and < 0.5")
+
+        if self.canvas_aspect_ratio >= 1:
+            height_for_photo_height = self.img_height / (1 - 2 * margin_relative)
+            height_for_photo_width = self.img_width / (
+                self.canvas_aspect_ratio - 2 * margin_relative
+            )
+            self.height_px = int(
+                round(max(height_for_photo_height, height_for_photo_width))
+            )
+            self.width_px = int(round(self.height_px * self.canvas_aspect_ratio))
+        else:
+            width_for_photo_width = self.img_width / (1 - 2 * margin_relative)
+            width_for_photo_height = self.img_height / (
+                (1 / self.canvas_aspect_ratio) - 2 * margin_relative
+            )
+            self.width_px = int(round(max(width_for_photo_width, width_for_photo_height)))
+            self.height_px = int(round(self.width_px / self.canvas_aspect_ratio))
+
+    def _calculate_mm_fixed_aspect_frame(self, margin_mm):
+        if self.canvas_aspect_ratio is None:
+            raise ValueError("aspect_ratio is required when frame_mode is fixed_aspect")
+        if margin_mm < 0:
+            raise ValueError("margin_mm must be >= 0")
+
+        margin_px = self.mm_to_px(margin_mm)
+        min_width = self.img_width + 2 * margin_px
+        min_height = self.img_height + 2 * margin_px
+
+        if min_width / min_height > self.canvas_aspect_ratio:
+            self.width_px = min_width
+            self.height_px = int(round(self.width_px / self.canvas_aspect_ratio))
+        else:
+            self.height_px = min_height
+            self.width_px = int(round(self.height_px * self.canvas_aspect_ratio))
+
+    def _calculate_fixed_aspect_frame(self):
+        unit = self._resolve_margin_unit()
+        if unit == "relative":
+            self._calculate_relative_fixed_aspect_frame(
+                self._resolve_margin_relative()
+            )
+        elif unit == "mm":
+            margin_mm = self._resolve_margin_mm()
+            if margin_mm is None:
+                raise ValueError("margin_mm is required when margin_unit is mm")
+            self._calculate_mm_fixed_aspect_frame(margin_mm)
+        else:
+            raise ValueError(f"Unsupported margin unit: {self.photo_margin_unit}")
 
     def _calculate_canvas_size(self):
         if self.layout_mode == "original":

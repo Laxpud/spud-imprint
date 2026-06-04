@@ -65,6 +65,27 @@ python -m spud_imprint batch `
 4. 添加模糊背景、照片圆角、阴影和文本。
 5. 把结果导出到输出目录。
 
+如果想先确认会处理哪些图片但不写入文件，可以使用 dry-run：
+
+```powershell
+python -m spud_imprint batch `
+  --input .\local\real-tests\input `
+  --output .\local\real-tests\output `
+  --config .\examples\config.example.toml `
+  --dry-run
+```
+
+需要查看更多路径信息时添加 `--verbose`：
+
+```powershell
+python -m spud_imprint batch `
+  --input .\local\real-tests\input `
+  --output .\local\real-tests\output `
+  --config .\examples\config.example.toml `
+  --dry-run `
+  --verbose
+```
+
 当前支持的输入扩展名：
 
 ```text
@@ -117,6 +138,34 @@ python -m spud_imprint batch `
 
 配置项说明见 [configuration.md](configuration.md)。
 
+## 校验配置
+
+只检查配置文件而不处理图片：
+
+```powershell
+python -m spud_imprint validate-config --config .\examples\config.example.toml
+```
+
+配置合法时会输出：
+
+```text
+Config OK
+```
+
+默认情况下，`validate-config` 只检查配置字段和字体等文件路径，不要求输入目录已经存在。如果希望同时检查输入目录，可以显式传入：
+
+```powershell
+python -m spud_imprint validate-config `
+  --config .\examples\config.example.toml `
+  --input .\local\real-tests\input
+```
+
+查看当前 CLI 版本：
+
+```powershell
+python -m spud_imprint --version
+```
+
 ## 运行测试
 
 默认测试命令：
@@ -146,4 +195,3 @@ assets/fonts/NotoSerifSC-VF.ttf
 ### 什么时候使用 tests/fixtures
 
 只有小型、脱敏、可自由分发，并且必须参与自动测试的素材，才应该放入 `tests/fixtures/`。
-

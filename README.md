@@ -40,6 +40,18 @@ python -m spud_imprint batch `
 
 命令会扫描输入目录中的常见图片格式，根据配置渲染水印和题字，并把导出结果写入输出目录。
 
+如果只想检查配置文件，可以运行：
+
+```powershell
+python -m spud_imprint validate-config --config .\examples\config.example.toml
+```
+
+配置合法时会输出 `Config OK`。如果要在批处理前预览会处理哪些图片，可以给 `batch` 添加 `--dry-run`；需要更多路径信息时添加 `--verbose`。查看当前版本使用：
+
+```powershell
+python -m spud_imprint --version
+```
+
 本地原始照片和生成结果不会进入 Git。建议把真实照片测试素材放在：
 
 ```text

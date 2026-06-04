@@ -124,8 +124,9 @@ def validate_config(
     config: ImprintConfig,
     project_root: str | Path | None = None,
     input_dir: str | Path | None = None,
+    check_input_dir: bool = True,
 ):
-    """在处理图片前校验配置，并在发现问题时一次性抛出清晰错误。"""
+    """校验配置字段，并在发现问题时一次性抛出清晰错误。"""
     root = Path(project_root) if project_root is not None else None
     errors: list[str] = []
 
@@ -177,7 +178,8 @@ def validate_config(
     if _resolve_existing_file(config.text.font_name, root) is None:
         errors.append(f"text.font_name: font file does not exist: {config.text.font_name}")
 
-    _validate_input_dir(errors, config, root, input_dir)
+    if check_input_dir:
+        _validate_input_dir(errors, config, root, input_dir)
 
     if errors:
         raise ConfigValidationError(errors)

@@ -40,6 +40,18 @@ python -m spud_imprint batch `
 
 The command scans the input directory for common image formats, renders the configured imprint, and writes exported images into the output directory.
 
+To validate a config file without processing images, run:
+
+```powershell
+python -m spud_imprint validate-config --config .\examples\config.example.toml
+```
+
+A valid config prints `Config OK`. Add `--dry-run` to `batch` to preview which images would be processed, and add `--verbose` when you need extra path details. To print the current version, use:
+
+```powershell
+python -m spud_imprint --version
+```
+
 Local source photos and generated outputs are intentionally ignored by Git. Put local real-photo test inputs here:
 
 ```text

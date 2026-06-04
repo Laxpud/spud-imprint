@@ -1,68 +1,79 @@
-# AI Agent Instructions
+# AI 代理指令
 
-This file defines repository-specific instructions for AI coding agents.
+本文件定义本仓库专用的 AI 编码代理工作规则。
 
-## Project Direction
+## 项目方向
 
-- Keep the image processing core in Python for now.
-- Keep CLI behavior stable before starting the desktop GUI.
-- Future GUI direction: Tauri + React/TypeScript, with interactive preview handled by Konva.js or a similar Canvas library.
-- Do not rewrite the rendering core in Rust unless package size or distribution constraints become a concrete priority.
+- 目前继续把图像处理核心保留在 Python 中。
+- 在启动桌面 GUI 之前，优先保持 CLI 行为稳定。
+- 未来 GUI 方向：Tauri + React/TypeScript，交互式预览由 Konva.js 或类似 Canvas 库处理。
+- 除非包体积或分发限制成为明确优先事项，不要把渲染核心改写为 Rust。
 
-## Language Rules
+## 语言规则
 
-- Use English for code identifiers, module names, CLI commands, terminal output, log messages, exception messages, and config keys.
-- When an AI agent adds or edits Python comments or docstrings, write those comments/docstrings in Chinese.
-- The Chinese comment/docstring rule is for AI agents only. Do not present it as a hard requirement for human contributors.
-- Keep user-facing default documentation in Chinese. Maintain `README.en.md` when changing `README.md`.
+- 代码标识符、模块名、CLI 命令、终端输出、日志消息、异常消息和配置键使用英文。
+- AI 代理新增或编辑 Python 注释和 docstring 时，这些注释和 docstring 使用中文。
+- 中文注释和 docstring 规则只约束 AI 代理；不要把它表述为人类贡献者必须遵守的硬性要求。
+- 默认面向用户的文档保持中文。修改 `README.md` 时，同步维护 `README.en.md`。
 
-## Python Style
+## Python 风格
 
-- Follow PEP 8 for formatting and PEP 257 for docstrings.
-- Add Chinese comments and docstrings generously enough that a reader with little coding experience can quickly understand what each meaningful block of code is doing and why it exists.
-- Prefer short block-level comments before important steps, branches, loops, data transformations, image geometry calculations, coordinate calculations, format conversions, configuration handling, and edge-case handling.
-- Avoid noisy line-by-line comments that only repeat obvious assignments or function calls; comments should explain purpose, data flow, assumptions, or the reason behind a choice.
-- Public classes, public functions, and complex private methods should have concise Chinese docstrings that explain their role, key inputs, outputs, and any important side effects.
+- 遵循 PEP 8 格式规范和 PEP 257 docstring 规范。
+- 适度多写中文注释和 docstring，让编程经验较少的读者也能快速理解每个有意义代码块在做什么以及为什么这样做。
+- 在重要步骤、分支、循环、数据转换、图像几何计算、坐标计算、格式转换、配置处理和边界情况处理前，优先添加简短的块级注释。
+- 避免逐行写只复述赋值或函数调用的噪声注释；注释应说明目的、数据流、假设或这样选择的原因。
+- 公共类、公共函数和复杂的私有方法应有简洁的中文 docstring，说明其职责、关键输入、输出以及重要副作用。
 
-## Testing Rules
+## 测试规则
 
-- Run the default test command before committing:
+- 提交前运行默认测试命令：
 
 ```powershell
 python -m unittest discover -s tests
 ```
 
-- Prefer generated images and temporary directories for fast tests.
-- Real photo assets should not be committed by default.
-- Local real-photo manual test inputs belong under `local/real-tests/input/`.
-- Local real-photo manual test outputs belong under `local/real-tests/output/`.
-- If fixture images are needed, place small, sanitized, redistributable files under `tests/fixtures/`.
+- 快速测试优先使用程序生成的图片和临时目录。
+- 默认不要提交真实照片资产。
+- 本地真实照片手动测试输入放在 `local/real-tests/input/`。
+- 本地真实照片手动测试输出放在 `local/real-tests/output/`。
+- 如果需要 fixture 图片，把小型、脱敏、可自由分发的文件放在 `tests/fixtures/`。
 
-## Git And Assets
+## TODO 维护规则
 
-- Do not create versioned script files such as `v0.5.py`; use Git commits and tags.
-- Use Conventional Commits for commit messages:
+- `TODO.md` 使用复选框记录进度：未完成写 `[ ]`，已完成写 `[x]`。
+- 完成或部分完成 `TODO.md` 中的事项时，在同一轮改动中同步更新对应主项和子项状态。
+- 只有在代码、文档和必要测试都已经落地后，才把主项标记为 `[x]`。
+- 部分完成的事项保持主项为 `[ ]`，并在条目下写明“当前状态”和剩余缺口。
+- 新增 TODO 时保持中文描述，写清目标、当前状态、建议实现或验收标准。
+- 不要把已经完成的事项直接删除；优先保留完成记录，除非是在专门整理历史 TODO。
+
+## Git 与资产
+
+- 不要创建 `v0.5.py` 这类带版本号的脚本文件；使用 Git commit 和 tag 管理版本。
+- AI 代理完成一轮文件改动后，默认检查状态、运行适用测试，并自动提交本轮相关改动；用户明确要求暂不提交、只修改不提交或需要先人工检查时除外。
+- 自动提交前只暂存本轮相关文件；如果工作区已有无关改动，不要把它们混入提交。
+- 提交信息使用 Conventional Commits：
 
 ```text
 type(scope): concise summary
 ```
 
-- Use a clear type such as `feat`, `fix`, `docs`, `test`, `refactor`, `style`, `build`, `ci`, or `chore`.
-- Add a short scope when it clarifies the affected area, for example `config`, `cli`, `canvas`, `pipeline`, `docs`, or `tests`.
-- Write the summary in English, in imperative mood, and keep it specific. Prefer `docs(agents): require conventional commit messages` over vague messages like `update files` or `misc changes`.
-- Unless the change is very small, add a commit body with bullet subitems that summarize the main changes, for example implementation details, affected behavior, tests run, or migration notes.
-- Keep original legacy scripts under `legacy/`.
-- Do not commit generated outputs, working photos, caches, or virtual environments.
-- Keep `local/` ignored; it is reserved for local-only real-photo tests.
-- Keep the root directory focused on project metadata and source folders.
+- 使用清晰的 type，例如 `feat`、`fix`、`docs`、`test`、`refactor`、`style`、`build`、`ci` 或 `chore`。
+- scope 能说明影响范围时添加简短 scope，例如 `config`、`cli`、`canvas`、`pipeline`、`docs` 或 `tests`。
+- summary 使用英文祈使句，并保持具体。优先使用 `docs(agents): require conventional commit messages`，不要使用 `update files` 或 `misc changes` 这类笼统信息。
+- 除非改动非常小，否则在提交正文中使用 bullet 子条目概括主要改动，例如实现细节、影响的行为、运行过的测试或迁移说明。
+- 原始遗留脚本保留在 `legacy/` 下。
+- 不要提交生成输出、工作照片、缓存或虚拟环境。
+- 保持 `local/` 被忽略；它专门用于本地真实照片测试。
+- 保持仓库根目录聚焦于项目元数据和源码目录。
 
-## Dependency Management
+## 依赖管理
 
-- Prefer `uv` for local Python environment setup:
+- 本地 Python 环境设置优先使用 `uv`：
 
 ```powershell
 uv venv
 uv pip install -e .
 ```
 
-- `uv` is a development tool preference, not an end-user runtime dependency.
+- `uv` 是开发工具偏好，不是终端用户运行时依赖。

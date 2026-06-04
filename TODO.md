@@ -2,34 +2,34 @@
 
 仓库准备工作已经完成：项目结构、Git 管理、GitHub 远端、GitHub Actions CI、基础测试、README、使用文档、配置文档、架构文档和 AI 指令都已经建立。
 
-当前状态更新于 2026-06-04。下次继续开发时，优先从第 1 项开始。
+当前状态更新于 2026-06-04。下次继续开发时，优先从第 2 项开始。
 
-## [ ] 1. 配置校验
+## [x] 1. 配置校验
 
 目标：在处理图片前检查 `config.toml` 是否合法，并给出清楚的错误信息。
 
-当前状态：尚未实现独立配置校验模块；目前只有配置加载和少量解析错误会在读取或处理时暴露。
+当前状态：已新增独立配置校验模块，并在 `batch` 命令开始处理前统一检查配置；错误会一次性列出字段路径和原因。
 
 需要检查：
 
-- [ ] `batch.quality` 是否在 `1..100`。
-- [ ] `batch.format` 是否为支持的格式，例如 `JPEG`、`PNG`、`WEBP`。
-- [ ] `canvas.layout_mode` 是否为 `original`、`fit`、`fill`、`stretch`。
-- [ ] `canvas.margin_relative` 是否大于等于 `0` 且小于 `0.5`。
-- [ ] `canvas.blur_fit_mode` 是否为 `cover` 或 `contain`。
-- [ ] `photo.shadow_color` 和 `text.color` 这类颜色值长度是否正确。
-- [ ] `text.alignment` 是否为 `left`、`center`、`right`。
-- [ ] `text.position_preset` 是否由合法的水平和垂直位置组成。
-- [ ] 字体路径不存在时是否给出明确提示。
+- [x] `batch.quality` 是否在 `1..100`。
+- [x] `batch.format` 是否为支持的格式，例如 `JPEG`、`PNG`、`WEBP`。
+- [x] `canvas.layout_mode` 是否为 `original`、`fit`、`fill`、`stretch`。
+- [x] `canvas.margin_relative` 是否大于等于 `0` 且小于 `0.5`。
+- [x] `canvas.blur_fit_mode` 是否为 `cover` 或 `contain`。
+- [x] `photo.shadow_color` 和 `text.color` 这类颜色值长度是否正确。
+- [x] `text.alignment` 是否为 `left`、`center`、`right`。
+- [x] `text.position_preset` 是否由合法的水平和垂直位置组成。
+- [x] 字体路径不存在时是否给出明确提示。
 - [x] 输入目录不存在时是否给出明确提示。
 
 建议实现：
 
-- [ ] 新增 `src/spud_imprint/validation.py`。
-- [ ] 定义 `ConfigValidationError`。
-- [ ] 提供 `validate_config(config, project_root=None, input_dir=None)`。
-- [ ] 在 `batch` 命令开始处理前调用校验。
-- [ ] 给错误配置补单元测试。
+- [x] 新增 `src/spud_imprint/validation.py`。
+- [x] 定义 `ConfigValidationError`。
+- [x] 提供 `validate_config(config, project_root=None, input_dir=None)`。
+- [x] 在 `batch` 命令开始处理前调用校验。
+- [x] 给错误配置补单元测试。
 
 ## [ ] 2. 增加 validate-config 命令
 
@@ -86,14 +86,14 @@ Config OK
 
 ## [ ] 5. 增加测试覆盖
 
-当前状态：已有基础配置加载、画布、文本位置、元数据格式化和批处理导出测试；下面这些专项覆盖仍需补齐。
+当前状态：已有基础配置加载、画布、文本位置、元数据格式化、批处理导出和配置校验测试；下面这些专项覆盖仍需补齐。
 
 优先补：
 
-- [ ] 错误配置测试。
+- [x] 错误配置测试。
 - [ ] CLI 参数测试。
 - [ ] 无 EXIF 图片测试。
-- [ ] 字体路径不存在测试。
+- [x] 字体路径不存在测试。
 - [ ] 不同输出格式测试。
 - [ ] 输入目录为空的测试。
 

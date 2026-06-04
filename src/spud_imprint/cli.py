@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .config import load_config
 from .pipeline import process_batch
+from .validation import ConfigValidationError, validate_config
 
 
 def build_parser():
@@ -27,6 +28,12 @@ def run_batch(args):
     """执行 batch 子命令，并把每张图片的处理结果打印到终端。"""
     config = load_config(args.config_path)
     project_root = Path.cwd()
+    try:
+        validate_config(config, project_root=project_root, input_dir=args.input_dir)
+    except ConfigValidationError as exc:
+        print(exc)
+        return 2
+
     results = process_batch(
         config,
         input_dir=args.input_dir,

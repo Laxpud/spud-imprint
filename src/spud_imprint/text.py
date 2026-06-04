@@ -7,6 +7,8 @@ from .metadata import prepare_metadata_text
 
 @dataclass
 class TextStylePreset:
+    """文字样式配置：包含字号、颜色、字体和排版方式。"""
+
     font_size_mm: float = 5
     font_size_relative: float | None = None
     text_color: tuple[int, ...] = (50, 50, 50)
@@ -17,6 +19,7 @@ class TextStylePreset:
     show_field_names: bool = True
 
     def get_font_size_px(self, canvas):
+        """把相对字号或毫米字号转换成实际绘制用的像素字号。"""
         if self.font_size_relative is not None:
             return int(min(canvas.height_px, canvas.width_px) * self.font_size_relative)
         return canvas.mm_to_px(self.font_size_mm)
@@ -30,9 +33,11 @@ def calculate_text_positions(
     position_preset="center middle",
     margin_percent=0.05,
 ):
+    """根据预设位置计算每一行文字左上角坐标。"""
     canvas_width_px = canvas.width_px
     canvas_height_px = canvas.height_px
 
+    # 预设位置由“水平 垂直”两部分组成，例如 center bottom。
     parts = position_preset.lower().split()
     horizontal = parts[0] if len(parts) > 0 else "center"
     vertical = parts[1] if len(parts) > 1 else "middle"
@@ -47,6 +52,7 @@ def calculate_text_positions(
         draw = ImageDraw.Draw(tmp_img)
         line_widths = []
         for line in text_lines:
+            # 不同 Pillow 版本支持的测量 API 不完全一样，这里按可用性逐级回退。
             if hasattr(font, "getbbox"):
                 bbox = font.getbbox(line)
                 width = bbox[2] - bbox[0]
@@ -70,6 +76,7 @@ def calculate_text_positions(
 
     positions = []
     for i, _line in enumerate(text_lines):
+        # 先确定整块文字的起始 x，再按每行对齐方式微调。
         if horizontal == "left":
             base_x = margin_x
         elif horizontal == "right":
@@ -100,6 +107,7 @@ def add_text_to_canvas(
     position_preset=None,
     margin_percent=0.05,
 ):
+    """把选中的元数据字段绘制到画布上。"""
     if text_style is None:
         text_style = TextStylePreset()
 
@@ -113,6 +121,7 @@ def add_text_to_canvas(
         font = ImageFont.load_default()
 
     if position_preset:
+        # 使用预设位置时，坐标由画布大小和文字块大小共同决定。
         positions = calculate_text_positions(
             canvas,
             display_text,
@@ -122,6 +131,7 @@ def add_text_to_canvas(
             margin_percent,
         )
     else:
+        # 没有预设时，保留旧接口：直接用毫米坐标指定第一行位置。
         x_pos = canvas.mm_to_px(position_mm[0])
         y_pos = canvas.mm_to_px(position_mm[1])
         line_height = int(font_size_px * text_style.line_spacing)
@@ -129,6 +139,7 @@ def add_text_to_canvas(
 
     for i, text in enumerate(display_text):
         pos = positions[i]
+        # 四个方向各画一次浅色文字，形成简单描边，提升照片上的可读性。
         shadow_positions = [
             (pos[0] + 1, pos[1] + 1),
             (pos[0] + 1, pos[1] - 1),

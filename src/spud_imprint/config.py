@@ -15,6 +15,8 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif"}
 
 @dataclass
 class BatchConfig:
+    """批处理配置：说明图片从哪里读、输出到哪里、用什么格式保存。"""
+
     input_dir: str = "input"
     output_dir: str = "output"
     filename_suffix: str = "_uniform_watermark"
@@ -24,6 +26,8 @@ class BatchConfig:
 
 @dataclass
 class CanvasConfig:
+    """画布配置：控制成品比例、背景、外边距和模糊背景。"""
+
     frame_mode: str | None = None
     layout_mode: str = "fit"
     aspect_ratio: float | None = 16 / 9
@@ -38,6 +42,8 @@ class CanvasConfig:
 
 @dataclass
 class PhotoConfig:
+    """照片配置：控制照片相框边距、圆角和阴影效果。"""
+
     margin_unit: str | None = None
     margin_policy: str = "minimum_edge"
     margin_mm: float | None = None
@@ -54,6 +60,8 @@ class PhotoConfig:
 
 @dataclass
 class TextConfig:
+    """文字配置：控制要绘制的元数据字段、字体、颜色和位置。"""
+
     fields: list[str] = field(default_factory=lambda: ["DateTimeOriginal"])
     font_size_mm: float = 5
     font_size_relative: float | None = 0.05
@@ -69,6 +77,8 @@ class TextConfig:
 
 @dataclass
 class ImprintConfig:
+    """完整配置对象：把批处理、画布、照片和文字四组配置放在一起。"""
+
     batch: BatchConfig = field(default_factory=BatchConfig)
     canvas: CanvasConfig = field(default_factory=CanvasConfig)
     photo: PhotoConfig = field(default_factory=PhotoConfig)
@@ -76,6 +86,7 @@ class ImprintConfig:
 
 
 def _tuple(value: Any):
+    """把 TOML 读出来的列表转换成 tuple，方便后续当作颜色或坐标使用。"""
     if value is None or isinstance(value, tuple):
         return value
     if isinstance(value, list):
@@ -84,6 +95,7 @@ def _tuple(value: Any):
 
 
 def _parse_aspect_ratio(value: Any):
+    """把 16:9、16/9、1.777 这几种比例写法统一转换成浮点数。"""
     if value is None:
         return None
     if isinstance(value, int | float):
@@ -94,6 +106,7 @@ def _parse_aspect_ratio(value: Any):
             return None
         separator = ":" if ":" in text else "/"
         if separator in text:
+            # 字符串比例只切一次，允许右侧继续保留用户输入用于报错提示。
             left, right = text.split(separator, 1)
             try:
                 ratio = float(left.strip()) / float(right.strip())
@@ -113,9 +126,11 @@ def _parse_aspect_ratio(value: Any):
 
 
 def _merge_dataclass(instance, values: dict[str, Any]):
+    """把配置文件里的字段覆盖到默认配置对象上，未知字段会被忽略。"""
     for key, value in values.items():
         if not hasattr(instance, key):
             continue
+        # TOML 没有 tuple 类型，所以颜色、坐标和列表需要在这里整理成程序习惯的形状。
         if key == "aspect_ratio":
             value = _parse_aspect_ratio(value)
         elif key.endswith("color"):
@@ -127,6 +142,7 @@ def _merge_dataclass(instance, values: dict[str, Any]):
 
 
 def load_config(path: str | Path | None = None) -> ImprintConfig:
+    """读取 TOML 配置；没有传路径时返回内置默认配置。"""
     config = ImprintConfig()
 
     if path is None:
@@ -136,6 +152,7 @@ def load_config(path: str | Path | None = None) -> ImprintConfig:
     with path.open("rb") as file:
         raw = tomllib.load(file)
 
+    # 每个 TOML 表对应一个 dataclass，小表缺失时就继续使用默认值。
     _merge_dataclass(config.batch, raw.get("batch", {}))
     _merge_dataclass(config.canvas, raw.get("canvas", {}))
     _merge_dataclass(config.photo, raw.get("photo", {}))

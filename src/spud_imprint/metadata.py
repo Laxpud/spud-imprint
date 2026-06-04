@@ -46,6 +46,7 @@ CATEGORY_MAP = {
 
 
 def empty_metadata():
+    """创建固定分类结构，保证没有 EXIF 时调用方也能安全读取。"""
     return {
         "device_info": {},
         "capture_settings": {},
@@ -59,6 +60,7 @@ def empty_metadata():
 
 
 def format_special_field(field, value):
+    """把常见 EXIF 字段转换成更适合显示在照片上的文本。"""
     if field == "ExposureTime":
         if value < 1:
             return f"1/{int(1 / value)}s"
@@ -77,12 +79,14 @@ def format_special_field(field, value):
 
 
 def get_categorized_metadata(image_path):
+    """读取图片 EXIF，并按设备、拍摄参数、时间等类别整理。"""
     categorized = empty_metadata()
 
     try:
         with Image.open(image_path) as img:
             exif_data = img._getexif() or {}
             for tag_id, value in exif_data.items():
+                # Pillow 给的是数字 tag_id，需要先翻译成人能看懂的 EXIF 字段名。
                 tag_name = TAGS.get(tag_id, tag_id)
                 category = CATEGORY_MAP.get(tag_name, "other")
                 categorized[category][tag_name] = value
@@ -93,10 +97,12 @@ def get_categorized_metadata(image_path):
 
 
 def prepare_metadata_text(metadata, fields_to_draw, text_style):
+    """按用户指定字段顺序生成最终要绘制的每一行文字。"""
     display_lines = []
 
     for field in fields_to_draw:
         value = None
+        # 字段已经被分到多个类别里，所以需要在所有类别中查找一次。
         for category in metadata.values():
             if field in category:
                 value = format_special_field(field, category[field])

@@ -8,6 +8,7 @@ from .pipeline import process_batch
 
 
 def build_parser():
+    """创建命令行参数解析器，目前主要提供批处理子命令。"""
     parser = argparse.ArgumentParser(
         prog="spud-imprint",
         description="Batch photo imprint and watermark tool.",
@@ -23,6 +24,7 @@ def build_parser():
 
 
 def run_batch(args):
+    """执行 batch 子命令，并把每张图片的处理结果打印到终端。"""
     config = load_config(args.config_path)
     project_root = Path.cwd()
     results = process_batch(
@@ -38,6 +40,7 @@ def run_batch(args):
 
     failed = 0
     for result in results:
+        # CLI 输出保持简短稳定，方便用户复制日志或未来被脚本读取。
         if result.ok:
             print(f"OK  {result.source} -> {result.output}")
         else:
@@ -49,6 +52,7 @@ def run_batch(args):
 
 
 def main(argv=None):
+    """命令行入口：解析参数并分发到具体子命令。"""
     parser = build_parser()
     args = parser.parse_args(argv)
 

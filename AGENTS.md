@@ -41,6 +41,16 @@ python -m unittest discover -s tests
 ## Git And Assets
 
 - Do not create versioned script files such as `v0.5.py`; use Git commits and tags.
+- Use Conventional Commits for commit messages:
+
+```text
+type(scope): concise summary
+```
+
+- Use a clear type such as `feat`, `fix`, `docs`, `test`, `refactor`, `style`, `build`, `ci`, or `chore`.
+- Add a short scope when it clarifies the affected area, for example `config`, `cli`, `canvas`, `pipeline`, `docs`, or `tests`.
+- Write the summary in English, in imperative mood, and keep it specific. Prefer `docs(agents): require conventional commit messages` over vague messages like `update files` or `misc changes`.
+- Unless the change is very small, add a commit body with bullet subitems that summarize the main changes, for example implementation details, affected behavior, tests run, or migration notes.
 - Keep original legacy scripts under `legacy/`.
 - Do not commit generated outputs, working photos, caches, or virtual environments.
 - Keep `local/` ignored; it is reserved for local-only real-photo tests.

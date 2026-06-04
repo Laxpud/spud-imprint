@@ -62,6 +62,8 @@ type(scope): concise summary
 - scope 能说明影响范围时添加简短 scope，例如 `config`、`cli`、`canvas`、`pipeline`、`docs` 或 `tests`。
 - summary 使用英文祈使句，并保持具体。优先使用 `docs(agents): require conventional commit messages`，不要使用 `update files` 或 `misc changes` 这类笼统信息。
 - 除非改动非常小，否则在提交正文中使用 bullet 子条目概括主要改动，例如实现细节、影响的行为、运行过的测试或迁移说明。
+- 提交正文的每个 bullet 必须独立换行；使用命令行提交时，优先为每个 bullet 使用单独的 `-m` 参数，或使用提交消息文件，禁止把多个 bullet 写进同一个 `-m` 字符串。
+- 提交后默认用 `git log -1 --format=full` 检查最近一次提交消息，确认 subject、空行和每个 body bullet 的换行格式正确。
 - 原始遗留脚本保留在 `legacy/` 下。
 - 不要提交生成输出、工作照片、缓存或虚拟环境。
 - 保持 `local/` 被忽略；它专门用于本地真实照片测试。

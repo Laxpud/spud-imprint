@@ -112,6 +112,30 @@ quality = 0
         self.assertIn("sample_uniform_watermark.jpeg", output.getvalue())
         process_batch.assert_not_called()
 
+    def test_batch_reports_empty_input_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            input_dir = root / "input"
+            output_dir = root / "output"
+            input_dir.mkdir()
+
+            output = StringIO()
+            with redirect_stdout(output):
+                exit_code = main(
+                    [
+                        "batch",
+                        "--input",
+                        str(input_dir),
+                        "--output",
+                        str(output_dir),
+                        "--config",
+                        "examples/config.example.toml",
+                    ]
+                )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("No supported images found.", output.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

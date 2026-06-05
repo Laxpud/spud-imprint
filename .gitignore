@@ -37,6 +37,8 @@ BatchTool_PhotoPocess_v0.4/output/
 !examples/**/*.jpeg
 !examples/**/*.png
 !assets/**/*.png
+!tests/fixtures/
+!tests/fixtures/**
 
 .DS_Store
 Thumbs.db

@@ -1,10 +1,41 @@
 import unittest
+import tempfile
+from pathlib import Path
 
-from spud_imprint.metadata import format_special_field, prepare_metadata_text
+from PIL import Image
+
+from spud_imprint.metadata import (
+    empty_metadata,
+    format_special_field,
+    get_categorized_metadata,
+    prepare_metadata_text,
+)
 from spud_imprint.text import TextStylePreset
 
 
+FIXTURE_DIR = Path(__file__).parent / "fixtures"
+
+
 class MetadataTests(unittest.TestCase):
+    def test_reads_small_exif_fixture(self):
+        metadata = get_categorized_metadata(FIXTURE_DIR / "sample_exif.jpg")
+
+        self.assertEqual(metadata["device_info"]["Make"], "Spud Imprint")
+        self.assertEqual(metadata["device_info"]["Model"], "Fixture Camera")
+        self.assertEqual(
+            metadata["time_info"]["DateTimeOriginal"],
+            "2026:06:05 20:30:00",
+        )
+
+    def test_handles_image_without_exif(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            image_path = Path(tmp) / "no-exif.jpg"
+            Image.new("RGB", (32, 24), (30, 60, 90)).save(image_path)
+
+            metadata = get_categorized_metadata(image_path)
+
+        self.assertEqual(metadata, empty_metadata())
+
     def test_formats_date_time_original_as_date(self):
         formatted = format_special_field("DateTimeOriginal", "2025:09:06 13:38:00")
 

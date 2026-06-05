@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image, features
 
 from spud_imprint.config import ImprintConfig
-from spud_imprint.pipeline import process_batch
+from spud_imprint.pipeline import process_batch, process_preview
 
 
 class PipelineTests(unittest.TestCase):
@@ -75,6 +75,40 @@ class PipelineTests(unittest.TestCase):
                     self.assertEqual(results[0].output.suffix, expected_suffix)
                     with Image.open(results[0].output) as exported:
                         self.assertEqual(exported.format, output_format)
+
+    def test_process_preview_exports_to_requested_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "sample.jpg"
+            output_path = root / "preview.png"
+            Image.new("RGB", (120, 80), (120, 130, 140)).save(source)
+
+            config = self._minimal_config()
+            config.batch.format = "PNG"
+
+            exported = process_preview(
+                source,
+                output_path,
+                config,
+                project_root=root,
+            )
+
+            self.assertEqual(exported, output_path.resolve())
+            self.assertTrue(output_path.exists())
+
+    def test_process_preview_rejects_unsupported_input_format(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "sample.txt"
+            source.write_text("not an image", encoding="utf-8")
+
+            with self.assertRaises(ValueError):
+                process_preview(
+                    source,
+                    root / "preview.jpeg",
+                    self._minimal_config(),
+                    project_root=root,
+                )
 
 
 if __name__ == "__main__":

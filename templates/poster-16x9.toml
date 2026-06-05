@@ -1,0 +1,30 @@
+[canvas]
+frame_mode = "fixed_aspect"
+aspect_ratio = "16:9"
+background_color = [18, 22, 30]
+margin_relative = 0.035
+blurred_background = true
+blur_radius = 80
+blur_extra_scale = 1.6
+blur_fit_mode = "cover"
+
+[photo]
+margin_unit = "relative"
+margin_policy = "minimum_edge"
+corner_radius_relative = 0.012
+shadow_enabled = true
+shadow_offset_relative = [0.006, 0.008]
+shadow_blur_relative = 0.014
+shadow_color = [0, 0, 0, 96]
+
+[text]
+fields = ["DateTimeOriginal", "Make", "Model"]
+font_size_relative = 0.032
+font_name = "assets/fonts/NotoSerifSC-VF.ttf"
+color = [255, 255, 255]
+shadow_color = [0, 0, 0, 160]
+alignment = "right"
+line_spacing = 1.25
+show_field_names = false
+position_preset = "right bottom"
+margin_percent = 0.04

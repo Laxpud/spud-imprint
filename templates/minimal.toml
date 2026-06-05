@@ -1,0 +1,23 @@
+[canvas]
+frame_mode = "photo_aspect"
+background_color = [255, 255, 255]
+margin_relative = 0.04
+blurred_background = false
+
+[photo]
+margin_unit = "relative"
+margin_policy = "minimum_edge"
+corner_radius_relative = 0
+shadow_enabled = false
+
+[text]
+fields = ["DateTimeOriginal"]
+font_size_relative = 0.035
+font_name = "assets/fonts/NotoSerifSC-VF.ttf"
+color = [32, 32, 32]
+shadow_color = [255, 255, 255, 0]
+alignment = "center"
+line_spacing = 1.3
+show_field_names = false
+position_preset = "center bottom"
+margin_percent = 0.04

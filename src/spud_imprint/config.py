@@ -11,6 +11,7 @@ except ModuleNotFoundError:  # pragma: no cover - used on Python 3.10
 
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif"}
+DEFAULT_TEMPLATE_DIR = "templates"
 
 
 @dataclass
@@ -141,20 +142,77 @@ def _merge_dataclass(instance, values: dict[str, Any]):
     return instance
 
 
-def load_config(path: str | Path | None = None) -> ImprintConfig:
-    """读取 TOML 配置；没有传路径时返回内置默认配置。"""
-    config = ImprintConfig()
-
-    if path is None:
-        return config
-
+def _load_toml(path: str | Path) -> dict[str, Any]:
+    """读取 TOML 文件并返回原始字典，供配置文件和模板复用。"""
     path = Path(path)
     with path.open("rb") as file:
-        raw = tomllib.load(file)
+        return tomllib.load(file)
 
-    # 每个 TOML 表对应一个 dataclass，小表缺失时就继续使用默认值。
+
+def _apply_raw_config(config: ImprintConfig, raw: dict[str, Any]) -> ImprintConfig:
+    """把 TOML 字典覆盖到配置对象上，小表缺失时继续使用已有值。"""
     _merge_dataclass(config.batch, raw.get("batch", {}))
     _merge_dataclass(config.canvas, raw.get("canvas", {}))
     _merge_dataclass(config.photo, raw.get("photo", {}))
     _merge_dataclass(config.text, raw.get("text", {}))
+    return config
+
+
+def resolve_template_path(
+    template: str | Path,
+    project_root: str | Path | None = None,
+) -> Path:
+    """把模板名称或模板路径解析成实际 TOML 文件路径。"""
+    template_path = Path(template)
+    names = [template_path]
+    if template_path.suffix == "":
+        names.append(template_path.with_suffix(".toml"))
+
+    candidates: list[Path] = []
+    roots = []
+    if project_root is not None:
+        roots.append(Path(project_root))
+    roots.append(Path.cwd())
+
+    for name in names:
+        if name.is_absolute():
+            candidates.append(name)
+        else:
+            # 先允许用户直接传相对路径，再把纯名称映射到 templates/ 目录。
+            for root in roots:
+                candidates.append(root / name)
+                if len(name.parts) == 1:
+                    candidates.append(root / DEFAULT_TEMPLATE_DIR / name)
+
+    seen = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except OSError:
+            resolved = candidate.absolute()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        if candidate.is_file():
+            return candidate
+
+    raise FileNotFoundError(f"Template does not exist: {template}")
+
+
+def load_config(
+    path: str | Path | None = None,
+    template: str | Path | None = None,
+    project_root: str | Path | None = None,
+) -> ImprintConfig:
+    """读取 TOML 配置；模板先覆盖默认值，用户配置再覆盖模板。"""
+    config = ImprintConfig()
+
+    if template is not None:
+        # 模板用于保存常用样式；命令行传入的配置仍然拥有最高优先级。
+        template_path = resolve_template_path(template, project_root=project_root)
+        _apply_raw_config(config, _load_toml(template_path))
+
+    if path is not None:
+        _apply_raw_config(config, _load_toml(path))
+
     return config

@@ -1,0 +1,30 @@
+[canvas]
+frame_mode = "fixed_aspect"
+aspect_ratio = "16:9"
+background_color = [240, 240, 240]
+margin_relative = 0.05
+blurred_background = true
+blur_radius = 100
+blur_extra_scale = 1.5
+blur_fit_mode = "cover"
+
+[photo]
+margin_unit = "relative"
+margin_policy = "minimum_edge"
+corner_radius_relative = 0.02
+shadow_enabled = true
+shadow_offset_relative = [0.005, 0.005]
+shadow_blur_relative = 0.01
+shadow_color = [0, 0, 0, 64]
+
+[text]
+fields = ["DateTimeOriginal"]
+font_size_relative = 0.05
+font_name = "assets/fonts/NotoSerifSC-VF.ttf"
+color = [255, 255, 255]
+shadow_color = [220, 220, 220, 128]
+alignment = "left"
+line_spacing = 1.5
+show_field_names = false
+position_preset = "center bottom"
+margin_percent = 0.05

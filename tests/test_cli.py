@@ -37,6 +37,21 @@ class CliTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn("Config OK", output.getvalue())
 
+    def test_validate_config_accepts_template(self):
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "validate-config",
+                    "--template",
+                    "minimal",
+                ]
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Config OK", output.getvalue())
+
     def test_validate_config_reports_invalid_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
             config_path = Path(tmp) / "config.toml"
@@ -135,6 +150,33 @@ quality = 0
 
         self.assertEqual(exit_code, 0)
         self.assertIn("No supported images found.", output.getvalue())
+
+    def test_preview_exports_one_image(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "sample.jpg"
+            output_path = root / "preview.jpeg"
+            Image.new("RGB", (80, 60), (120, 130, 140)).save(source)
+
+            output = StringIO()
+            with redirect_stdout(output):
+                exit_code = main(
+                    [
+                        "preview",
+                        "--input",
+                        str(source),
+                        "--output",
+                        str(output_path),
+                        "--config",
+                        "examples/config.example.toml",
+                        "--template",
+                        "minimal",
+                    ]
+                )
+
+            self.assertEqual(exit_code, 0)
+            self.assertTrue(output_path.exists())
+            self.assertIn("OK", output.getvalue())
 
 
 if __name__ == "__main__":

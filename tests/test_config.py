@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from spud_imprint.config import load_config
+from spud_imprint.config import load_config, resolve_template_path
 
 
 class ConfigTests(unittest.TestCase):
@@ -53,6 +53,76 @@ aspect_ratio = "21:9"
             config = load_config(config_path)
 
         self.assertAlmostEqual(config.canvas.aspect_ratio, 21 / 9)
+
+    def test_loads_named_template_from_project_templates_dir(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            template_dir = root / "templates"
+            template_dir.mkdir()
+            (template_dir / "minimal.toml").write_text(
+                """
+[canvas]
+blurred_background = false
+
+[text]
+color = [10, 20, 30]
+""".strip(),
+                encoding="utf-8",
+            )
+
+            config = load_config(template="minimal", project_root=root)
+
+        self.assertFalse(config.canvas.blurred_background)
+        self.assertEqual(config.text.color, (10, 20, 30))
+
+    def test_config_file_overrides_template_values(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            template_dir = root / "templates"
+            template_dir.mkdir()
+            template_path = template_dir / "classic.toml"
+            config_path = root / "config.toml"
+            template_path.write_text(
+                """
+[batch]
+quality = 80
+
+[text]
+alignment = "center"
+""".strip(),
+                encoding="utf-8",
+            )
+            config_path.write_text(
+                """
+[batch]
+quality = 95
+""".strip(),
+                encoding="utf-8",
+            )
+
+            config = load_config(
+                config_path,
+                template="classic",
+                project_root=root,
+            )
+
+        self.assertEqual(config.batch.quality, 95)
+        self.assertEqual(config.text.alignment, "center")
+
+    def test_resolves_template_path_without_suffix(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            template_dir = root / "templates"
+            template_dir.mkdir()
+            template_path = template_dir / "poster.toml"
+            template_path.write_text(
+                '[canvas]\naspect_ratio = "16:9"\n',
+                encoding="utf-8",
+            )
+
+            resolved = resolve_template_path("poster", project_root=root)
+
+        self.assertEqual(resolved, template_path)
 
 
 if __name__ == "__main__":

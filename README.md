@@ -46,7 +46,27 @@ python -m spud_imprint batch `
 python -m spud_imprint validate-config --config .\examples\config.example.toml
 ```
 
-配置合法时会输出 `Config OK`。如果要在批处理前预览会处理哪些图片，可以给 `batch` 添加 `--dry-run`；需要更多路径信息时添加 `--verbose`。查看当前版本使用：
+配置合法时会输出 `Config OK`。如果要在批处理前预览会处理哪些图片，可以给 `batch` 添加 `--dry-run`；需要更多路径信息时添加 `--verbose`。
+
+如果只想渲染一张预览图，可以使用 `preview`：
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --config .\examples\config.example.toml
+```
+
+常用样式可以通过 `--template` 选择，例如 `classic`、`minimal` 或 `poster-16x9`：
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --template minimal
+```
+
+查看当前版本使用：
 
 ```powershell
 python -m spud_imprint --version

@@ -46,7 +46,27 @@ To validate a config file without processing images, run:
 python -m spud_imprint validate-config --config .\examples\config.example.toml
 ```
 
-A valid config prints `Config OK`. Add `--dry-run` to `batch` to preview which images would be processed, and add `--verbose` when you need extra path details. To print the current version, use:
+A valid config prints `Config OK`. Add `--dry-run` to `batch` to preview which images would be processed, and add `--verbose` when you need extra path details.
+
+To render a single preview image, use `preview`:
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --config .\examples\config.example.toml
+```
+
+Reusable styles can be selected with `--template`, such as `classic`, `minimal`, or `poster-16x9`:
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --template minimal
+```
+
+To print the current version, use:
 
 ```powershell
 python -m spud_imprint --version

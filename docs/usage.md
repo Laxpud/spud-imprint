@@ -86,6 +86,19 @@ python -m spud_imprint batch `
   --verbose
 ```
 
+## 生成单张预览图
+
+`preview` 命令只处理一张图片，适合快速检查当前配置或未来 GUI 调用同一套渲染流程：
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --config .\examples\config.example.toml
+```
+
+输出路径是目标文件路径。实际后缀会跟随配置中的导出格式，例如 `format = "JPEG"` 时会导出为 `.jpeg`。
+
 当前支持的输入扩展名：
 
 ```text
@@ -137,6 +150,41 @@ python -m spud_imprint batch `
 ```
 
 配置项说明见 [configuration.md](configuration.md)。
+
+## 使用模板
+
+仓库内置模板放在：
+
+```text
+templates/
+```
+
+当前包含：
+
+```text
+classic.toml
+minimal.toml
+poster-16x9.toml
+```
+
+模板只保存常用样式，不建议在模板中写入个人输入输出路径。命令行可以通过 `--template` 使用模板名称：
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --template minimal
+```
+
+也可以把模板和配置文件一起使用。加载顺序是：内置默认值、模板、配置文件，所以配置文件会覆盖模板中的同名字段：
+
+```powershell
+python -m spud_imprint batch `
+  --input .\local\real-tests\input `
+  --output .\local\real-tests\output `
+  --template poster-16x9 `
+  --config .\local\config.toml
+```
 
 ## 校验配置
 

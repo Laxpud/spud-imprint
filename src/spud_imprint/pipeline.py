@@ -131,6 +131,33 @@ def process_image(
     return exported
 
 
+def process_preview(
+    image_path: Path,
+    output_path: Path,
+    config: ImprintConfig,
+    project_root: Path | None = None,
+):
+    """处理单张预览图，并把结果写到用户指定的输出文件。"""
+    image_path = Path(image_path)
+    output_path = Path(output_path)
+
+    if not image_path.exists():
+        raise FileNotFoundError(f"Input image does not exist: {image_path}")
+    if not image_path.is_file():
+        raise IsADirectoryError(f"Input path is not a file: {image_path}")
+    if image_path.suffix.lower() not in IMAGE_EXTENSIONS:
+        raise ValueError(f"Unsupported image format: {image_path.suffix}")
+
+    rendered, canvas = render_image(image_path, config, project_root=project_root)
+    return export_image(
+        rendered,
+        output_path,
+        canvas,
+        format=config.batch.format,
+        quality=config.batch.quality,
+    )
+
+
 def process_batch(
     config: ImprintConfig,
     input_dir: str | Path | None = None,

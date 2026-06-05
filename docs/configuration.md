@@ -402,3 +402,46 @@ python -m spud_imprint batch `
 ```
 
 `local/` 已被 Git 忽略，适合保存个人配置和真实照片测试文件。
+
+## 模板
+
+常用样式模板位于：
+
+```text
+templates/
+```
+
+当前内置：
+
+```text
+classic.toml
+minimal.toml
+poster-16x9.toml
+```
+
+模板文件仍然使用相同的 TOML 表结构，可以只写需要覆盖的部分。例如：
+
+```toml
+[canvas]
+blurred_background = false
+
+[text]
+alignment = "center"
+```
+
+命令行使用 `--template` 加载模板名称或模板文件路径：
+
+```powershell
+python -m spud_imprint preview `
+  --input .\local\real-tests\input\P1074931.jpg `
+  --output .\local\preview.jpeg `
+  --template minimal
+```
+
+如果同时传入 `--template` 和 `--config`，加载顺序是：
+
+```text
+内置默认值 -> 模板 -> 配置文件
+```
+
+因此个人配置文件会覆盖模板中的同名字段。建议把通用外观放在 `templates/`，把个人路径、临时参数和真实照片测试配置放在被 Git 忽略的 `local/`。

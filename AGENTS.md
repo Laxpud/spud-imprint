@@ -1,6 +1,34 @@
 # AI 代理指令
 
-本文件定义本仓库专用的 AI 编码代理工作规则。
+本文件定义本仓库专用的 AI 编码代理工作规则。它主要承担入口索引、模块路由和行为边界的作用；架构背景、配置说明和用户手册等长文档应维护在 `docs/` 中。
+
+## 文档入口
+
+- 架构背景和技术决策：`docs/architecture.md`。
+- 配置格式和模板说明：`docs/configuration.md`。
+- 开发、测试和发布流程：`docs/development.md`。
+- 用户命令和使用示例：`docs/usage.md`。
+- 当前计划、进度和未完成事项：`TODO.md`。
+
+## 模块路由
+
+- `src/spud_imprint/cli.py`：CLI 参数、子命令、退出码和终端输出。
+- `src/spud_imprint/pipeline.py`：批处理、预览和单图处理流程编排。
+- `src/spud_imprint/config.py`：配置模型、默认值和 TOML 模板加载。
+- `src/spud_imprint/validation.py`：配置和输入路径校验。
+- `src/spud_imprint/canvas.py`：画布、照片布局、边距、圆角、阴影和背景。
+- `src/spud_imprint/metadata.py`：图片元数据读取与字段归类。
+- `src/spud_imprint/text.py`：文字样式、字段排版和绘制。
+- `src/spud_imprint/export.py`：导出格式、质量和文件保存。
+- `tests/`：单元测试和小型 fixture；新增行为应优先补充对应测试。
+
+## 行为边界
+
+- 修改前先按任务类型阅读相关入口文档和模块；不要在 `AGENTS.md` 中复制长篇架构说明。
+- 优先保持 CLI 用户可见行为稳定，包括子命令、退出码、终端输出和 dry-run 语义。
+- 图像处理核心应放在 `pipeline.py` 及其下游核心模块中，不要把核心渲染逻辑塞进 CLI。
+- 新增配置项时，同步考虑配置模型、默认值、模板、配置文档、中英文 README 和测试。
+- 未来 GUI 应复用稳定的 Python 核心和配置模型，不应引入另一套独立渲染逻辑。
 
 ## 项目方向
 

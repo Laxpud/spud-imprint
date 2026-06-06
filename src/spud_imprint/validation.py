@@ -5,6 +5,7 @@ from typing import Iterable
 
 from .config import ImprintConfig
 from .export import FORMAT_EXTENSIONS
+from .resources import resolve_existing_resource
 
 
 SUPPORTED_LAYOUT_MODES = {"original", "fit", "fill", "stretch"}
@@ -59,30 +60,9 @@ def _validate_color(errors, field_path, value, expected_length):
 
 def _resolve_existing_file(path_text, project_root):
     """按 CLI 的相对路径语义查找文件，找不到时返回 None。"""
-    if not path_text:
-        return None
-
-    path = Path(path_text)
-    if path.is_absolute():
-        return path if path.is_file() else None
-
-    candidates = []
-    if project_root is not None:
-        candidates.append(Path(project_root) / path)
-    candidates.append(Path.cwd() / path)
-    candidates.append(path)
-
-    seen = set()
-    for candidate in candidates:
-        try:
-            resolved = candidate.resolve()
-        except OSError:
-            resolved = candidate.absolute()
-        if resolved in seen:
-            continue
-        seen.add(resolved)
-        if candidate.is_file():
-            return candidate
+    resolved = resolve_existing_resource(path_text, project_root=project_root)
+    if resolved is not None and resolved.is_file():
+        return resolved
     return None
 
 

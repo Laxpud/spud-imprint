@@ -103,6 +103,16 @@ python -m spud_imprint batch `
   --config .\examples\config.example.toml
 ```
 
+## Packaging Check
+
+The current Windows CLI portable package is validated with PyInstaller one-dir:
+
+```powershell
+.\scripts\build-windows.ps1
+```
+
+The script runs the default tests, builds `dist/spud-imprint-windows-x64/`, and runs a packaged CLI smoke test outside the source tree. See [docs/packaging.md](docs/packaging.md) for details.
+
 ## Development Rules
 
 See [docs/development.md](docs/development.md) for repository conventions.
@@ -112,6 +122,7 @@ More documentation:
 - [Project TODO](TODO.md)
 - [Usage guide](docs/usage.md)
 - [Configuration reference](docs/configuration.md)
+- [CLI packaging check](docs/packaging.md)
 - [Beginner code walkthrough](docs/code-walkthrough.md)
 - [Architecture notes](docs/architecture.md)
 

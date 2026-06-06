@@ -103,6 +103,16 @@ python -m spud_imprint batch `
   --config .\examples\config.example.toml
 ```
 
+## 打包验证
+
+当前 Windows CLI 便携包使用 PyInstaller one-dir 方式验证：
+
+```powershell
+.\scripts\build-windows.ps1
+```
+
+脚本会运行默认测试、构建 `dist/spud-imprint-windows-x64/`，并在源码目录外执行打包冒烟测试。详细说明见 [docs/packaging.md](docs/packaging.md)。
+
 ## 开发规范
 
 本仓库的具体约定见 [docs/development.md](docs/development.md)。
@@ -112,6 +122,7 @@ python -m spud_imprint batch `
 - [后续工作 TODO](TODO.md)
 - [使用指南](docs/usage.md)
 - [配置说明](docs/configuration.md)
+- [CLI 打包验证](docs/packaging.md)
 - [代码导览教程](docs/code-walkthrough.md)
 - [架构说明](docs/architecture.md)
 

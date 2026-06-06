@@ -9,6 +9,7 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - used on Python 3.10
     import tomli as tomllib
 
+from .resources import resolve_existing_resource, runtime_resource_roots
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif"}
 DEFAULT_TEMPLATE_DIR = "templates"
@@ -168,33 +169,16 @@ def resolve_template_path(
     if template_path.suffix == "":
         names.append(template_path.with_suffix(".toml"))
 
-    candidates: list[Path] = []
-    roots = []
-    if project_root is not None:
-        roots.append(Path(project_root))
-    roots.append(Path.cwd())
-
     for name in names:
-        if name.is_absolute():
-            candidates.append(name)
-        else:
-            # 先允许用户直接传相对路径，再把纯名称映射到 templates/ 目录。
-            for root in roots:
-                candidates.append(root / name)
-                if len(name.parts) == 1:
-                    candidates.append(root / DEFAULT_TEMPLATE_DIR / name)
-
-    seen = set()
-    for candidate in candidates:
-        try:
-            resolved = candidate.resolve()
-        except OSError:
-            resolved = candidate.absolute()
-        if resolved in seen:
-            continue
-        seen.add(resolved)
-        if candidate.is_file():
-            return candidate
+        # 先允许用户直接传路径，再把纯模板名映射到 templates/ 目录。
+        resolved = resolve_existing_resource(name, project_root=project_root)
+        if resolved is not None and resolved.is_file():
+            return resolved
+        if len(name.parts) == 1:
+            for root in runtime_resource_roots(project_root):
+                candidate = root / DEFAULT_TEMPLATE_DIR / name
+                if candidate.is_file():
+                    return candidate
 
     raise FileNotFoundError(f"Template does not exist: {template}")
 

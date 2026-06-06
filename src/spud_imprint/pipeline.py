@@ -9,6 +9,7 @@ from .canvas import VirtualCanvas
 from .config import IMAGE_EXTENSIONS, ImprintConfig
 from .export import export_image
 from .metadata import get_categorized_metadata
+from .resources import resolve_existing_resource
 from .text import TextStylePreset, add_text_to_canvas
 
 
@@ -31,21 +32,9 @@ def iter_image_files(input_dir: Path):
 
 def resolve_font_path(font_name: str, project_root: Path | None = None):
     """把配置里的字体路径解析成真实文件路径，找不到就交给 Pillow 自己处理。"""
-    font_path = Path(font_name)
-    if font_path.is_absolute() and font_path.exists():
-        return str(font_path)
-
-    # 依次尝试项目根目录、当前工作目录和原始路径，兼容 CLI 从不同目录启动。
-    candidates = []
-    if project_root is not None:
-        candidates.append(project_root / font_path)
-    candidates.append(Path.cwd() / font_path)
-    candidates.append(font_path)
-
-    for candidate in candidates:
-        if candidate.exists():
-            return str(candidate)
-
+    resolved = resolve_existing_resource(font_name, project_root=project_root)
+    if resolved is not None and resolved.is_file():
+        return str(resolved)
     return font_name
 
 

@@ -2,7 +2,7 @@
 
 仓库准备工作已经完成：项目结构、Git 管理、GitHub 远端、GitHub Actions CI、基础测试、README、使用文档、配置文档、架构文档和 AI 指令都已经建立。
 
-当前状态更新于 2026-06-05。下次继续开发时，优先从第 9 项 CLI 打包验证开始。
+当前状态更新于 2026-06-06。下次继续开发时，优先从第 10 项 GUI 技术原型开始。
 
 ## [x] 1. 配置校验
 
@@ -145,18 +145,18 @@ templates/
 
 已先实现轻量级模板系统，模板只保存常用样式；个人路径和真实照片测试配置继续放在被 Git 忽略的 `local/`。
 
-## [ ] 9. CLI 打包验证
+## [x] 9. CLI 打包验证
 
 目标：先把 Python CLI 打成可执行文件，验证分发路径。
 
-当前状态：尚未开始。
+当前状态：已使用 PyInstaller one-dir 打通 Windows x64 便携包验证流程；构建脚本会运行默认单元测试、生成 `dist/spud-imprint-windows-x64/`，并在源码目录外执行打包冒烟测试。
 
 候选工具：
 
-- PyInstaller
+- PyInstaller：已作为第一阶段默认方案。
 - Nuitka
 
-先验证 Windows，再考虑 macOS/Linux。
+已先验证 Windows；Nuitka、macOS/Linux、安装器、签名和 GitHub Release 留到后续发布流程中再评估。
 
 ## [ ] 10. GUI 技术原型
 

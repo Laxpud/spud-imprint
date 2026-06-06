@@ -12,6 +12,7 @@ Spud Imprint 是一个批量照片加印与水印工具，用于把照片、画�
 - 配置格式和模板说明：`docs/configuration.md`。
 - 面向学习者的代码导览：`docs/code-walkthrough.md`。
 - 开发、测试和发布流程：`docs/development.md`。
+- Windows CLI 打包验证：`docs/packaging.md`。
 - 用户命令和使用示例：`docs/usage.md`。
 - 当前计划、进度和未完成事项：`TODO.md`。
 

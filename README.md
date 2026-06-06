@@ -112,6 +112,7 @@ python -m spud_imprint batch `
 - [后续工作 TODO](TODO.md)
 - [使用指南](docs/usage.md)
 - [配置说明](docs/configuration.md)
+- [代码导览教程](docs/code-walkthrough.md)
 - [架构说明](docs/architecture.md)
 
 核心约定：

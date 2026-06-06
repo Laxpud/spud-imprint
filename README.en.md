@@ -112,6 +112,7 @@ More documentation:
 - [Project TODO](TODO.md)
 - [Usage guide](docs/usage.md)
 - [Configuration reference](docs/configuration.md)
+- [Beginner code walkthrough](docs/code-walkthrough.md)
 - [Architecture notes](docs/architecture.md)
 
 Key rules:

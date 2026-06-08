@@ -42,6 +42,8 @@ npm run tauri dev
 npm run build
 ```
 
+如果只打开 Vite 页面 `http://127.0.0.1:1420`，界面只能用于布局预览。浏览器无法提供 Tauri 的原生文件和目录选择器，也不能调用 Rust 后端命令；选择按钮会在日志面板提示改用 `npm run tauri dev`。
+
 Rust 后端校验：
 
 ```powershell

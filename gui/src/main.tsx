@@ -17,6 +17,7 @@ import "./styles.css";
 declare global {
   interface Window {
     __SPUD_IMPRINT_ROOT__?: Root;
+    __TAURI_INTERNALS__?: unknown;
   }
 }
 
@@ -49,6 +50,7 @@ function normalizeDialogPath(value: string | string[] | null): string {
 }
 
 function App() {
+  const isDesktopRuntime = isTauriRuntime();
   const [request, setRequest] = useState<BatchRequest>(initialRequest);
   const [isRunning, setIsRunning] = useState(false);
   const [logText, setLogText] = useState("Ready.");
@@ -64,30 +66,54 @@ function App() {
   };
 
   const chooseDirectory = async (key: "inputDir" | "outputDir") => {
-    const selected = await open({
-      directory: true,
-      multiple: false,
-      title: key === "inputDir" ? "Select input directory" : "Select output directory",
-    });
-    const path = normalizeDialogPath(selected);
-    if (path) {
-      updateField(key, path);
+    if (!isDesktopRuntime) {
+      showBrowserPreviewMessage(setLogText);
+      return;
+    }
+
+    try {
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: key === "inputDir" ? "Select input directory" : "Select output directory",
+      });
+      const path = normalizeDialogPath(selected);
+      if (path) {
+        updateField(key, path);
+      }
+    } catch (error) {
+      setLogText(formatUiError(error));
     }
   };
 
   const chooseConfig = async () => {
-    const selected = await open({
-      multiple: false,
-      title: "Select config file",
-      filters: [{ name: "TOML config", extensions: ["toml"] }],
-    });
-    const path = normalizeDialogPath(selected);
-    if (path) {
-      updateField("configFile", path);
+    if (!isDesktopRuntime) {
+      showBrowserPreviewMessage(setLogText);
+      return;
+    }
+
+    try {
+      const selected = await open({
+        multiple: false,
+        title: "Select config file",
+        filters: [{ name: "TOML config", extensions: ["toml"] }],
+      });
+      const path = normalizeDialogPath(selected);
+      if (path) {
+        updateField("configFile", path);
+      }
+    } catch (error) {
+      setLogText(formatUiError(error));
     }
   };
 
   const runBatch = async () => {
+    if (!isDesktopRuntime) {
+      showBrowserPreviewMessage(setLogText);
+      setLastStatus(1);
+      return;
+    }
+
     if (!canRun || isRunning) {
       return;
     }
@@ -166,6 +192,30 @@ function App() {
       </section>
     </main>
   );
+}
+
+function isTauriRuntime(): boolean {
+  return typeof window.__TAURI_INTERNALS__ !== "undefined";
+}
+
+function showBrowserPreviewMessage(setLogText: (value: string) => void) {
+  setLogText(
+    [
+      "This page is running in browser preview mode.",
+      "",
+      "Native folder and file pickers are only available inside the Tauri desktop window.",
+      "",
+      "Start it with:",
+      "  cd gui",
+      "  npm run tauri dev",
+      "",
+      "You can still paste absolute paths into the fields while previewing the layout in a browser.",
+    ].join("\n"),
+  );
+}
+
+function formatUiError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function PathField(props: {

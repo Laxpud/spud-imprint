@@ -113,6 +113,18 @@ python -m spud_imprint batch `
 
 脚本会运行默认测试、构建 `dist/spud-imprint-windows-x64/`，并在源码目录外执行打包冒烟测试。详细说明见 [docs/packaging.md](docs/packaging.md)。
 
+## GUI 技术原型
+
+桌面 GUI 原型位于 `gui/`，使用 Tauri 2 + React + TypeScript。当前原型只负责选择输入目录、输出目录和配置文件，随后调用现有 Python CLI 并显示处理日志；完整交互预览留到后续阶段。
+
+```powershell
+cd gui
+npm install
+npm run tauri dev
+```
+
+详细说明见 [docs/gui-prototype.md](docs/gui-prototype.md)。
+
 ## 开发规范
 
 本仓库的具体约定见 [docs/development.md](docs/development.md)。
@@ -123,6 +135,7 @@ python -m spud_imprint batch `
 - [使用指南](docs/usage.md)
 - [配置说明](docs/configuration.md)
 - [CLI 打包验证](docs/packaging.md)
+- [GUI 技术原型](docs/gui-prototype.md)
 - [代码导览教程](docs/code-walkthrough.md)
 - [架构说明](docs/architecture.md)
 
@@ -139,4 +152,4 @@ python -m spud_imprint batch `
 2. 稳定 `src/spud_imprint` 中的核心处理模块。
 3. 完善配置驱动的 CLI。
 4. 扩展测试覆盖元数据、布局、导出和端到端批处理。
-5. 核心逻辑稳定后，再开始桌面 GUI。
+5. 通过轻量桌面 GUI 原型验证 CLI 复用路径。

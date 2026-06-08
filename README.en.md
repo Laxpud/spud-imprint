@@ -113,6 +113,18 @@ The current Windows CLI portable package is validated with PyInstaller one-dir:
 
 The script runs the default tests, builds `dist/spud-imprint-windows-x64/`, and runs a packaged CLI smoke test outside the source tree. See [docs/packaging.md](docs/packaging.md) for details.
 
+## GUI Prototype
+
+The desktop GUI prototype lives in `gui/` and uses Tauri 2 + React + TypeScript. The current prototype only selects an input directory, output directory, and config file, then calls the existing Python CLI and shows the processing log. The full interactive preview is planned for a later stage.
+
+```powershell
+cd gui
+npm install
+npm run tauri dev
+```
+
+See [docs/gui-prototype.md](docs/gui-prototype.md) for details.
+
 ## Development Rules
 
 See [docs/development.md](docs/development.md) for repository conventions.
@@ -123,6 +135,7 @@ More documentation:
 - [Usage guide](docs/usage.md)
 - [Configuration reference](docs/configuration.md)
 - [CLI packaging check](docs/packaging.md)
+- [GUI prototype](docs/gui-prototype.md)
 - [Beginner code walkthrough](docs/code-walkthrough.md)
 - [Architecture notes](docs/architecture.md)
 
@@ -139,4 +152,4 @@ Key rules:
 2. Stabilize the core modules under `src/spud_imprint`.
 3. Improve the configuration-driven CLI.
 4. Expand tests around metadata, layout, export, and end-to-end batch processing.
-5. Start the desktop GUI after the core logic is stable.
+5. Validate CLI reuse through a lightweight desktop GUI prototype.
